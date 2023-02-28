@@ -12,7 +12,7 @@ public class GetCoupon
     public GetCoupon()
     {
         var coupon = new List<Coupon> { new Coupon { 1,"test1",20,DateTime.Now,DateTime.Now.Date.AddDays((2)) },  new Coupon { 2,"test2",21,DateTime.Now,DateTime.Now.Date.AddDays((3)) }};
-        _mockCouponRepository = new Mock<IReadRepository<Coupon>>();
+        _mockCouponRepository = new Mock<IReadRepository<List<Coupon>>>();
         _mockCouponRepository.Setup(x => x.FirstOrDefaultAsync(It.IsAny<Coupon>())
             .ReturnsAsync(coupon));
     }

@@ -11,7 +11,7 @@ public class AddCouponToDb
     public AddCouponToDb()
     {
         var coupon = new List<Coupon> { new Coupon { 1,"test1",20,DateTime.Now,DateTime.Now.Date.AddDays((2)) },  new Coupon { 2,"test2",21,DateTime.Now,DateTime.Now.Date.AddDays((3)) }};
-        _mockCouponRepository = new Mock<IRepository<Coupon>>();
+        _mockCouponRepository = new Mock<IRepository<List<Coupon>>>();
         _mockCouponRepository.Setup(x => x.FirstOrDefaultAsync(It.IsAny<CouponWithItemsSpecification>())
             .ReturnsAsync(coupon));
     }
