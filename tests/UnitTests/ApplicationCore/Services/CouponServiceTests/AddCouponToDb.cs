@@ -42,8 +42,10 @@ public class AddCouponToDb
     public async void AddOneCouponFailure(int couponId, string couponName,int percentageDiscount, DateTime startDate, DateTime endDate)
     {
         var couponService = new CouponService(_mockCouponRepository.Object);
-        await couponService.AddCouponToDb(couponId,couponName,percentageDiscount,startDate,endDate);
-
-        _mockCouponRepository.Verify(x => x.FirstOrDefaultAsync(It.IsAny<CouponWithItemsSpecification>(), default), Times.Once);
+      
+        Assert.Throws<ArgumentException>(() =>
+        couponService.AddCouponToDb(couponId, couponName, percentageDiscount, startDate, endDate).Result
+        );
+        //_mockCouponRepository.Verify(x => x.FirstOrDefaultAsync(It.IsAny<CouponWithItemsSpecification>(), default), Times.Once);
     }
 }

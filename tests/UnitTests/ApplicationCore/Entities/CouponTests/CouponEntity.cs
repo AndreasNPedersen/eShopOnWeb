@@ -36,14 +36,9 @@ public class CouponEntity
         //Arrange
         
         //Act
-        var coupon = new Coupon(id,couponName,percentageDiscount,startDate,endDate);
-        
+
         //Assert
-        Assert.Equal(id,coupon.Id);
-        Assert.Equal(couponName,coupon.CouponName);
-        Assert.Equal(percentageDiscount,coupon.PercentageDiscount);
-        Assert.Equal(startDate,coupon.StartDate);
-        Assert.Equal(endDate,coupon.EndDate);
+        Assert.Throws<FormatException>(()=> new Coupon(id,couponName,percentageDiscount,startDate,endDate))
     }
     
 }

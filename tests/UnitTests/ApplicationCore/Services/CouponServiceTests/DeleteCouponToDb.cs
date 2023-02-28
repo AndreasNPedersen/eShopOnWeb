@@ -8,11 +8,11 @@ public class DeleteCouponToDb
 {
     private readonly Mock<IRepository<Coupon>> _mockCouponRepository;
 
-    public AddCouponToDb()
+    public DeleteCouponToDb()
     {
         var coupon = new List<Coupon> { new Coupon { 1,"test1",20,DateTime.Now,DateTime.Now.Date.AddDays((2)) },  new Coupon { 2,"test2",21,DateTime.Now,DateTime.Now.Date.AddDays((3)) }};
         _mockCouponRepository = new Mock<IRepository<List<Coupon>>>();
-        _mockCouponRepository.Setup(x => x.GetByIdAsync(It.IsAny<int>(), default))
+        _mockCouponRepository.Setup(x =>  x.GetByIdAsync(It.IsAny<int>(), default))
             .ReturnsAsync(coupon);
     }
     
@@ -31,8 +31,7 @@ public class DeleteCouponToDb
     {
         var couponId = 3;
         var couponService = new CouponService(_mockCouponRepository.Object);
-        await couponService.AddCouponToDb(couponId,couponName,percentageDiscount,startDate,endDate);
-
-        _mockCouponRepository.Verify(x => x.FirstOrDefaultAsync(It.IsAny<CouponWithItemsSpecification>(), default), Times.Once);
+        Assert.Throws<ArgumentNullException>(()=>  couponService.DeleteCouponFromDb(couponId).Result);
+        //_mockCouponRepository.Verify(x => x.FirstOrDefaultAsync(It.IsAny<CouponWithItemsSpecification>(), default), Times.Once);
     }
 }
