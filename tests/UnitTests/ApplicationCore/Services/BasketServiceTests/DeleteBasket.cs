@@ -21,6 +21,7 @@ public class DeleteBasket
         basket.AddItem(2, It.IsAny<decimal>(), It.IsAny<int>());
         _mockBasketRepo.Setup(x => x.GetByIdAsync(It.IsAny<int>(), default))
             .ReturnsAsync(basket);
+        
         var basketService = new BasketService(_mockBasketRepo.Object, _mockLogger.Object);
 
         await basketService.DeleteBasketAsync(It.IsAny<int>());
