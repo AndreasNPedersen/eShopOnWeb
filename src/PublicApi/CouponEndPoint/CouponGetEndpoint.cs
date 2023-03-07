@@ -35,14 +35,13 @@ public class CouponGetEndpoint : IEndpoint<IResult, IRepository<Coupon>>
             .WithTags("CouponGetEndpoints");
     }
 
-    public async Task<IResult> HandleAsync(IRepository<Coupon> catalogTypeRepository)
+    public async Task<IResult> HandleAsync(IRepository<Coupon> couponRepository)
     {
-        var response = new ListCatalogTypesResponse();
 
-        var items = await catalogTypeRepository.ListAsync();
+        var coupons = await catalogTypeRepository.ListAsync();
 
-        response.CatalogTypes.AddRange(items.Select(_mapper.Map<CouponDto>));
+     
 
-        return Results.Ok(response);
+        return Results.Ok(coupons);
     }   
 }
