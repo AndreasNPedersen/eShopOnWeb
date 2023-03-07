@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using Microsoft.eShopWeb.ApplicationCore.Entities;
+using Xunit;
 
 namespace Microsoft.eShopWeb.UnitTests.ApplicationCore.Entities.CouponTests;
 
