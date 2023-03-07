@@ -2,7 +2,7 @@
 
 namespace Microsoft.eShopWeb.PublicApi.CouponEndpoints;
 
-public class CouponDTO
+public class CouponDto
 {
     public int Id { get; set; }
     public string Name { get; set; }

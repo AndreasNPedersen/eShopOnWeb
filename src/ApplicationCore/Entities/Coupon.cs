@@ -8,7 +8,7 @@ using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 namespace Microsoft.eShopWeb.ApplicationCore.Entities;
 public class Coupon : BaseEntity, IAggregateRoot
 {
-    public Coupon() { }
+    //public Coupon() { }
     public Coupon(int id, string name, int percentageDiscount, DateTime startDate, DateTime endDate)
     {
         this.Id = id;
@@ -17,7 +17,7 @@ public class Coupon : BaseEntity, IAggregateRoot
         this.EndDate = endDate;
         this.PercentageDiscount = percentageDiscount;
     }
-    public int Id { get; set; }
+    //public int Id { get; set; }
     public string Name { get; set; }
     public int PercentageDiscount {  get; set; }
     public DateTime StartDate { get; set; }
