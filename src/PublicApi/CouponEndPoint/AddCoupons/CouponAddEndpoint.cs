@@ -11,7 +11,7 @@ using Microsoft.eShopWeb.ApplicationCore.Specifications;
 using Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints;
 using System.Threading.Tasks;
 
-namespace Microsoft.eShopWeb.PublicApi.CouponEndPoint;
+namespace Microsoft.eShopWeb.PublicApi.CouponEndPoint.AddCoupons;
 
 public class CouponAddEndpoint
 {

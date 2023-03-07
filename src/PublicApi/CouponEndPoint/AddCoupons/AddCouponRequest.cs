@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Microsoft.eShopWeb.PublicApi.CouponEndPoint;
+namespace Microsoft.eShopWeb.PublicApi.CouponEndPoint.AddCoupons;
 
 public class AddCouponRequest : BaseRequest
 {
