@@ -2,9 +2,8 @@
 
 namespace Microsoft.eShopWeb.PublicApi.CouponEndPoint;
 
-public class CouponDto
+public class AddCouponRequest : BaseRequest
 {
-    public int Id { get; set; }
     public string Name { get; set; }
     public int PercentageDiscount { get; set; }
     public DateTime StartDate { get; set; }

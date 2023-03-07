@@ -12,36 +12,39 @@ using IResult = Ardalis.Result.IResult;
 
 namespace Microsoft.eShopWeb.PublicApi.CouponEndPoint;
 
-public class CouponGetEndpoint : IEndpoint<IResult, IRepository<Coupon>>
-{
-    
-    private readonly IMapper _mapper;
+// Du skal gøre ligesom CatalogItemGetByIdEndpoint i samme projekt fil mappe CatalogItemEndpoint
 
-    public CouponGetEndpoint(IMapper mapper)
-    {
-        _mapper = mapper;
-    }
+//public class CouponGetEndpoint : IEndpoint<IResult, IRepository<Coupon>>
+//{
+
+//    private readonly IMapper _mapper;
+
+//    public CouponGetEndpoint(IMapper mapper)
+//    {
+//        _mapper = mapper;
+//    }
 
 
 
-    public void AddRoute(IEndpointRouteBuilder app)
-    {
-        app.MapGet("api/Coupon",
-                async (IRepository<Coupon> catalogTypeRepository) =>
-                {
-                    return await HandleAsync(catalogTypeRepository);
-                })
-            .Produces<ListCatalogTypesResponse>()
-            .WithTags("CouponGetEndpoints");
-    }
+//    public void AddRoute(IEndpointRouteBuilder app)
+//    {
+//        app.MapGet("api/Coupon",
+//                async (IRepository<Coupon> catalogTypeRepository) =>
+//                {
+//                    return await HandleAsync(catalogTypeRepository);
+//                })
+//            .Produces<CouponGetResponse>()
+//            .WithTags("CouponGetEndpoints");
+//    }
 
-    public async Task<IResult> HandleAsync(IRepository<Coupon> couponRepository)
-    {
 
-        var coupons = await catalogTypeRepository.ListAsync();
+//    public async Task<IResult> HandleAsync(IRepository<Coupon> couponRepository)
+//    {
 
-     
+//        var coupons = await couponRepository.FirstOrDefaultAsync());
 
-        return Results.Ok(coupons);
-    }   
-}
+
+
+//        return Results.Ok(coupons);
+//    }
+//}
