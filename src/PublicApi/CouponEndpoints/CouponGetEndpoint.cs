@@ -1,50 +1,64 @@
-﻿using System.Linq;
-using System.Threading.Tasks;
-using AutoMapper;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.eShopWeb.ApplicationCore.Entities;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
-using Microsoft.eShopWeb.PublicApi.CatalogTypeEndpoints;
+using AutoMapper;
 using MinimalApi.Endpoint;
-using IResult = Ardalis.Result.IResult;
 
 namespace Microsoft.eShopWeb.PublicApi.CouponEndpoints;
 
-// Du skal gøre ligesom CatalogItemGetByIdEndpoint i samme projekt fil mappe CatalogItemEndpoint
+public class CouponGetEndpoint : IEndpoint<IResult, GetByIdCouponRequest, IRepository<Coupon>>
+{
+    private readonly IMapper _mapper;
 
-//public class CouponGetEndpoint : IEndpoint<IResult, IRepository<Coupon>>
-//{
+    public CouponGetEndpoint(IMapper mapper)
+    {
+        _mapper = mapper;
+    }
 
-//    private readonly IMapper _mapper;
-
-//    public CouponGetEndpoint(IMapper mapper)
-//    {
-//        _mapper = mapper;
-//    }
-
-
-
-//    public void AddRoute(IEndpointRouteBuilder app)
-//    {
-//        app.MapGet("api/Coupon",
-//                async (IRepository<Coupon> catalogTypeRepository) =>
-//                {
-//                    return await HandleAsync(catalogTypeRepository);
-//                })
-//            .Produces<CouponGetResponse>()
-//            .WithTags("CouponGetEndpoints");
-//    }
+    public void AddRoute(IEndpointRouteBuilder app)
+    {
+        app.MapGet("api/Coupon",
+                async (int couponId, IRepository<Coupon> couponRepository) =>
+                {
+                    return await HandleAsync(new GetByIdCouponRequest(couponId), couponRepository);
+                })
+            .Produces<CouponGetResponse>()
+            .WithTags("CouponGetEndpoints");
+    }
 
 
-//    public async Task<IResult> HandleAsync(IRepository<Coupon> couponRepository)
-//    {
+    public async Task<IResult> HandleAsync(GetByIdCouponRequest request, IRepository<Coupon> couponRepository)
+    {
+        var response = new GetByIdCouponResponse(request.CorrelationId());
 
-//        var coupons = await couponRepository.FirstOrDefaultAsync());
+        var coupon = await couponRepository.GetByIdAsync(request.CouponId);
+        
+        if (coupon is null)
+        {
+            return Results.NotFound();
+        }
+
+        response.Coupon = new CouponDto
+        {
+            Id = coupon.Id,
+            Name = coupon.Name,
+            PercentageDiscount = coupon.PercentageDiscount,
+            StartDate = coupon.StartDate,
+            EndDate = coupon.EndDate
+
+        };
+        
+        
 
 
+        return Results.Ok(coupon);
+    }
 
-//        return Results.Ok(coupons);
-//    }
-//}
+    public Task<IResult> HandleAsync(IRepository<Coupon> request)
+    {
+        throw new System.NotImplementedException();
+    }
+}
