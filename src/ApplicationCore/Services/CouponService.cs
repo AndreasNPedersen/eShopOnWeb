@@ -56,5 +56,6 @@ public class CouponService : ICouponService
         var coupon = await _couponRepository.GetByIdAsync(couponId);
         Guard.Against.Null(coupon, nameof(coupon));
         await _couponRepository.DeleteAsync(coupon);
+        return true;
     }
 }

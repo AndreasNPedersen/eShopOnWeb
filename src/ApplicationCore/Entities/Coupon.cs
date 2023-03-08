@@ -8,16 +8,15 @@ using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 namespace Microsoft.eShopWeb.ApplicationCore.Entities;
 public class Coupon : BaseEntity, IAggregateRoot
 {
-    //public Coupon() { }
+    public Coupon() { }
     public Coupon(int id, string name, int percentageDiscount, DateTime startDate, DateTime endDate)
     {
-        this.Id = id;
-        this.Name = name;
-        this.StartDate = startDate;
-        this.EndDate = endDate;
-        this.PercentageDiscount = percentageDiscount;
+        base.Id = id;
+        Name = name;
+        StartDate = startDate;
+        EndDate = endDate;
+        PercentageDiscount = percentageDiscount;
     }
-    //public int Id { get; set; }
     public string Name { get; set; }
     public int PercentageDiscount {  get; set; }
     public DateTime StartDate { get; set; }

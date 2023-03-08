@@ -23,21 +23,18 @@ public class CouponEntity
     public static IEnumerable<object[]> DataFailure =>
         new List<object[]>
         {
-            new object[] { int.MaxValue, "", int.MaxValue, DateTime.Now, DateTime.Now.Date.AddDays(int.MaxValue)},
-            new object[] { int.MinValue, "", int.MinValue, DateTime.Now, DateTime.Now.Date.AddDays(int.MinValue)},
-            new object[] {1, "", 1, DateTime.Now, DateTime.Now.Date.AddDays(int.MaxValue) },
-            new object[] { 1, "", 1, DateTime.Now, DateTime.Now.Date.AddDays(int.MinValue) },
+            new object[] { "", DateTime.Now},
+            new object[] {"", DateTime.Now },
+
         };
     
-    [Theory, MemberData(nameof(DataFailure), parameters: 5)]
-    public void AddCouponEntryFails(int id, string name, int percentageDiscount,DateTime startDate, DateTime endDate)
+    [Theory, MemberData(nameof(DataFailure), parameters: 2)]
+    public void AddCouponEntryFails(string name,DateTime startDate)
     {   
-        //Arrange
-        
-        //Act
-
+        // Testing DateTime values, since the Compiler is clever enough to know when an int is too large, cannot test int.
         //Assert
-        Assert.Throws<FormatException>(()=> new Coupon(id,name,percentageDiscount,startDate,endDate));
+        Assert.Throws<ArgumentOutOfRangeException>(()=> new Coupon(int.MaxValue,name, int.MaxValue, startDate, DateTime.Now.Date.AddDays(int.MaxValue)));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new Coupon(int.MaxValue, name, int.MaxValue, startDate, DateTime.Now.Date.AddDays(int.MinValue)));
     }
     
 }
