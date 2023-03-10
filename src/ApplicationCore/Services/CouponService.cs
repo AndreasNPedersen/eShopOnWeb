@@ -38,12 +38,12 @@ public class CouponService : ICouponService
         var couponSpec = new CouponSpecification(couponName);
         var newCoupon = await _couponRepository.FirstOrDefaultAsync(couponSpec);
 
-        if (newCoupon == null)
+        if (newCoupon != null)
         {
             return false;
         }
 
-        _couponRepository.AddAsync(new Coupon()
+        await _couponRepository.AddAsync(new Coupon()
         {
             Name = couponName, PercentageDiscount = percentageDiscount, StartDate = startDate, EndDate = endDate
         });
@@ -53,7 +53,8 @@ public class CouponService : ICouponService
 
     public async Task<bool> DeleteCouponFromDb(int couponId)
     {
-        var coupon = await _couponRepository.GetByIdAsync(couponId);
+        var couponSpec = new CouponByIdSpec(couponId);
+        var coupon = await _couponRepository.GetByIdAsync(couponSpec);
         Guard.Against.Null(coupon, nameof(coupon));
         await _couponRepository.DeleteAsync(coupon);
         return true;

@@ -1,52 +1,64 @@
-﻿//using Microsoft.eShopWeb.ApplicationCore.Entities;
-//using Microsoft.eShopWeb.ApplicationCore.Interfaces;
-//using Moq;
-//using Xunit;
+﻿using Microsoft.eShopWeb.ApplicationCore.Entities;
+using Microsoft.eShopWeb.ApplicationCore.Interfaces;
+using Microsoft.eShopWeb.ApplicationCore.Services;
+using Microsoft.eShopWeb.ApplicationCore.Specifications;
+using Microsoft.eShopWeb.Infrastructure.Data.Migrations;
+using Moq;
+using Xunit;
+using Coupon = Microsoft.eShopWeb.ApplicationCore.Entities.Coupon;
 
-//namespace Microsoft.eShopWeb.UnitTests.ApplicationCore.Services.CouponServiceTests;
+namespace Microsoft.eShopWeb.UnitTests.ApplicationCore.Services.CouponServiceTests;
 
-//public class AddCouponToDb
-//{
-//    private readonly Mock<IRepository<Coupon>> _mockCouponRepository;
+public class AddCouponToDb
+{
+    private readonly Mock<IRepository<Coupon>> _mockCouponRepository = new();
+    private Coupon coupon = new();
 
-//    public AddCouponToDb()
-//    {
-//        var coupon = new List<Coupon> { new Coupon { Id=1,Name="test1",PercentageDiscount=20,StartDate=DateTime.Now,EndDate=DateTime.Now.Date.AddDays((2)) },  new Coupon { Id=2,Name = Name = "test2", PercentageDiscount = 2, StartDate = DateTime.Now, EndDate = DateTime.Now.Date.AddDays((3)) }};
-//        _mockCouponRepository = new Mock<IRepository<List<Coupon>>>();
-//        _mockCouponRepository.Setup(x => x.FirstOrDefaultAsync(It.IsAny<CouponWithItemsSpecification>())
-//            .ReturnsAsync(coupon));
-//    }
-    
-//    [Fact]
-//    public async void AddOneCouponSuccess()
-//    {
-//        var couponId = 1;
-//        var coupenName = "spar20";
-//        var percentageDiscount = 20;
-//        var startDate = DateTime.Now;
-//        var endDate = DateTime.Now.Date.AddDays(10);
-//        var couponService = new CouponService(_mockCouponRepository.Object);
-//        await couponService.AddCouponToDb(couponId,coupenName,percentageDiscount,startDate,endDate);
 
-//        _mockCouponRepository.Verify(x => x.FirstOrDefaultAsync(It.IsAny<CouponWithItemsSpecification>(), default), Times.Once);
-//    }
-    
-//    public static IEnumerable<object[]> DataFailure =>
-//        new List<object[]>
-//        {
-//            new object[] {1, "test1", 1, DateTime.Now, DateTime.Now.Date.AddDays(-1) },
-//            new object[] {1, "test2", 1, DateTime.Now.Date.AddDays(1), DateTime.Now },
-//            new object[] {1, "", 1, DateTime.Now, DateTime.Now.Date.AddDays(1) },
-//        };
-    
-//    [Theory,MemberData(nameof(DataFailure),parameters:5)]
-//    public async void AddOneCouponFailure(int couponId, string couponName,int percentageDiscount, DateTime startDate, DateTime endDate)
-//    {
-//        var couponService = new CouponService(_mockCouponRepository.Object);
+    public AddCouponToDb()
+    {
+        coupon = new Coupon(1, "test1", 20, DateTime.Now, DateTime.Now.Date.AddDays(2));
+        _mockCouponRepository = new Mock<IRepository<Coupon>>();
+       _= _mockCouponRepository.Setup(x => x.FirstOrDefaultAsync(It.IsAny<CouponSpecification>(), default)).ReturnsAsync(coupon);
+    }
 
-//        Assert.Throws<ArgumentException>(() =>
-//        couponService.AddCouponToDb(couponId, couponName, percentageDiscount, startDate, endDate).Result
-//        );
-//        //_mockCouponRepository.Verify(x => x.FirstOrDefaultAsync(It.IsAny<CouponWithItemsSpecification>(), default), Times.Once);
-//    }
-//}
+    [Fact]
+    public async void AddOneCouponSuccess()
+    {
+        _mockCouponRepository.Reset();
+        _ = _mockCouponRepository.Setup(x => x.FirstOrDefaultAsync(It.IsAny<CouponSpecification>(), default));
+     
+        var couponService = new CouponService(_mockCouponRepository.Object);
+       var gottenCoupon = await couponService.AddCouponToDb("test2", coupon.PercentageDiscount, coupon.StartDate, coupon.EndDate);
+
+        _mockCouponRepository.Verify(x => x.FirstOrDefaultAsync(It.IsAny<CouponSpecification>(), default), Times.Once);
+        Assert.True(gottenCoupon);
+    }
+
+    public static IEnumerable<object[]> DataFailure =>
+        new List<object[]>
+        {
+            new object[] {"test1", 1, DateTime.Now, DateTime.Now ,-111111111},
+            new object[] {"test1", 1, DateTime.Now, DateTime.Now,100000000 }
+        };
+
+    [Theory, MemberData(nameof(DataFailure), parameters: 5)]
+    public async void AddOneCouponFailure(string couponName, int percentageDiscount, DateTime startDate, DateTime endDate, int days)
+    {
+        var couponService = new CouponService(_mockCouponRepository.Object);
+
+
+        Assert.Throws<ArgumentOutOfRangeException>(() =>
+        couponService.AddCouponToDb(couponName, percentageDiscount, startDate.AddDays(days), endDate.AddDays(days)).Result);
+    }
+
+    [Fact]
+    public async void AddOneAldreadyInDb_ExpectedFailure()
+    {
+        var couponService = new CouponService(_mockCouponRepository.Object);
+        var couponGotten = await couponService.AddCouponToDb(coupon.Name, coupon.PercentageDiscount, coupon.StartDate, coupon.EndDate);
+
+        _mockCouponRepository.Verify(x => x.FirstOrDefaultAsync(It.IsAny<CouponSpecification>(), default), Times.Once);
+        Assert.False(couponGotten);
+    }
+}

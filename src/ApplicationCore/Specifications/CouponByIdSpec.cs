@@ -3,13 +3,10 @@ using Ardalis.Specification;
 using Microsoft.eShopWeb.ApplicationCore.Entities;
 
 namespace Microsoft.eShopWeb.ApplicationCore.Specifications;
-
-public class CouponSpecification : Specification<Coupon>
+public class CouponByIdSpec : Specification<Coupon>
 {
-    public CouponSpecification(string name)
+    public CouponByIdSpec(int id)
     {
-        Query.Where(c => c.Name == name);
+        Query.Where(c => c.Id == id);
     }
-
-
 }
