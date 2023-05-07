@@ -48,15 +48,32 @@
                 }
 
                 <div class="container">
+                    @if(Model.PercentageDiscount != 0){
                     <article class="esh-basket-titles esh-basket-titles--clean row">
                         <section class="esh-basket-title col-xs-10"></section>
-                        <section class="esh-basket-title col-xs-2">Total</section>
+                        <section class="esh-basket-title col-xs-2">Coupon added: @Model.PercentageDiscount % discount on total</section>
+                    </article>
+
+                        <article class="esh-basket-titles esh-basket-titles--clean row">
+                            <section class="esh-basket-title col-xs-10"></section>
+                            <section class="esh-basket-title col-xs-2">Total with coupon</section>
+                        </article>
+
+                        <article class="esh-basket-items row">
+                            <section class="esh-basket-item col-xs-10"></section>
+                            <section class="esh-basket-item esh-basket-item--mark col-xs-2">$ @Model.Total</section>
+                        </article>
+                    }
+                    <article class="esh-basket-titles esh-basket-titles--clean row">
+                        <section class="esh-basket-title col-xs-10"></section>
+                        <section class="esh-basket-title col-xs-2">Total without coupon</section>
                     </article>
 
                     <article class="esh-basket-items row">
                         <section class="esh-basket-item col-xs-10"></section>
                         <section class="esh-basket-item esh-basket-item--mark col-xs-2">$ @Model.BasketModel.Total().ToString("N2")</section>
                     </article>
+
 
                     <article class="esh-basket-items row">
                         <section class="esh-basket-item col-xs-7"></section>
@@ -66,17 +83,24 @@
                     <section class="esh-basket-item col-xs-1">
                         <a asp-page="Index" class="btn esh-basket-checkout text-white">[ Back ]</a>
                     </section>
-                    <section class="esh-basket-item col-xs-4">
-                        <label for="coupon-code">Coupon Code</label>
-                        <input type="text" id="coupon-code" name="coupon-code" class="" placeholder="Enter code here" />
-                        <input type="button" class="btn" value="[ Validate Code ]" onclick="ValidateCouponCode()" />
-                    </section>
                     <section class="esh-basket-item col-xs-push-7 col-xs-4 text-right">
                         <input type="submit" class="btn esh-basket-checkout" value="[ Pay Now ]" />
                     </section>
                 </div>
             </div>
         </form>
+                    <form asp-page="Checkout" asp-page-handler="HandleCoupon"  method="post">
+                        <section class="esh-basket-item col-xs-4">
+                            <label for="coupon-code">Coupon Code</label>
+                            @if (!String.IsNullOrEmpty(Model.ErrorForCoupon)){
+                                <p style="color:red">@Model.ErrorForCoupon</p>                           
+                                }
+                <input type="text" id="couponCode" name="couponCode" value="@Model.CouponInput" placeholder="Enter code here" />
+                            <br/>
+                            <input type="submit" class="btn esh-basket-checkout" value="[ Add Coupon ]" />
+                        </section>
+                        
+                    </form>
     }
     else
     {
@@ -88,24 +112,7 @@
             <a asp-page="/Index" class="btn esh-basket-checkout text-white">[ Continue Shopping ]</a>
         </section>
     }
-<script>
-    ValidateCouponCode = function() {
-            let data = document.getElementById("coupon-code").value;
-            console.log(`coupon code is ${data}`);
-            fetch("/api/coupon", {
-                method: "POST",
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            }).then(res => {
-                if (res.status == 200) {
-                    console.log(`code accepted`);
-                }
-                console.log("Request complete! response:", res);
-            }).catch(err => {
-                // if any error occured, then catch it here
-                console.error(err);
-            });
-    }
-</script>
+
 </div>
+
 
