@@ -24,8 +24,9 @@ public class CouponAddEndpoint
 
     public void AddRoute(IEndpointRouteBuilder app)
     {
-        app.MapPost("api/addCoupon",
-            [Authorize(Roles = BlazorShared.Authorization.Constants.Roles.ADMINISTRATORS, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async
+        app.MapPost("api/coupon",
+            //[Authorize(Roles = BlazorShared.Authorization.Constants.Roles.ADMINISTRATORS, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] 
+        async
             (AddCouponRequest request, IRepository<Coupon> itemRepository) =>
             {
                 return await HandleAsync(request, itemRepository);
@@ -53,7 +54,7 @@ public class CouponAddEndpoint
 
         newItem = await itemRepository.AddAsync(newItem);
 
-        return Results.Created($"api/CouponAdded/", response);
+        return Results.Created($"api/coupon", response);
     }
 
 }

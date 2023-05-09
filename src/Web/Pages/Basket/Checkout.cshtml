@@ -42,7 +42,6 @@
                             <section class="esh-basket-item esh-basket-item--middle esh-basket-item--mark col-xs-2">$ @Math.Round(item.Quantity * item.UnitPrice, 2).ToString("N2")</section>
                         </div>
                         <div class="row">
-
                         </div>
                     </article>
                 }
@@ -69,7 +68,8 @@
                     <section class="esh-basket-item col-xs-4">
                         <label for="coupon-code">Coupon Code</label>
                         <input type="text" id="coupon-code" name="coupon-code" class="" placeholder="Enter code here" />
-                        <input type="button" class="btn" value="[ Validate Code ]" onclick="ValidateCouponCode()" />
+                        <a asp-page-handler="OnPostValidateCoupon" class="btn esh-basket-checkout">Validate Coupon</a>
+                        @*<input type="button" class="btn" value="[ Validate Code ]" onclick="" />*@
                     </section>
                     <section class="esh-basket-item col-xs-push-7 col-xs-4 text-right">
                         <input type="submit" class="btn esh-basket-checkout" value="[ Pay Now ]" />
@@ -88,7 +88,7 @@
             <a asp-page="/Index" class="btn esh-basket-checkout text-white">[ Continue Shopping ]</a>
         </section>
     }
-<script>
+<sc@*ript>
     ValidateCouponCode = function() {
             let data = document.getElementById("coupon-code").value;
             console.log(`coupon code is ${data}`);
@@ -106,6 +106,6 @@
                 console.error(err);
             });
     }
-</script>
+</script>*@
 </div>
 

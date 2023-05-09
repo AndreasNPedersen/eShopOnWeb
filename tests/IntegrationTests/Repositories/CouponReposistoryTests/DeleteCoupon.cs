@@ -35,9 +35,9 @@ public class DeleteCoupon
     }
 
     [Fact]
-    public async Task GetsExistingCoupon()
+    public async Task DeleteCouponSuccess()
     {
-        
+        //arrange
         int couponId = existingCoupon.Id;
 
         //is the coupon in the system test

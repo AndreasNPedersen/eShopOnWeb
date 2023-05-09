@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate;
 using Microsoft.eShopWeb.ApplicationCore.Exceptions;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
+using Microsoft.eShopWeb.ApplicationCore.Services;
 using Microsoft.eShopWeb.Infrastructure.Identity;
 using Microsoft.eShopWeb.Web.Interfaces;
 
@@ -19,17 +20,20 @@ public class CheckoutModel : PageModel
     private readonly IOrderService _orderService;
     private string? _username = null;
     private readonly IBasketViewModelService _basketViewModelService;
+    private readonly ICouponService _couponService;
     private readonly IAppLogger<CheckoutModel> _logger;
 
     public CheckoutModel(IBasketService basketService,
         IBasketViewModelService basketViewModelService,
         SignInManager<ApplicationUser> signInManager,
         IOrderService orderService,
+        ICouponService couponService,
         IAppLogger<CheckoutModel> logger)
     {
         _basketService = basketService;
         _signInManager = signInManager;
         _orderService = orderService;
+        _couponService = couponService;
         _basketViewModelService = basketViewModelService;
         _logger = logger;
     }
@@ -93,5 +97,29 @@ public class CheckoutModel : PageModel
         var cookieOptions = new CookieOptions();
         cookieOptions.Expires = DateTime.Today.AddYears(10);
         Response.Cookies.Append(Constants.BASKET_COOKIENAME, _username, cookieOptions);
+    }
+
+    private async Task<IActionResult> OnPostValidateCoupon(string couponName)
+    {
+        var coupon = await _couponService.GetCoupon(couponName);
+        Console.WriteLine("OnPostValidateCoupon");
+        if ( coupon != null )
+        {
+            SubtractDiscount(coupon.PercentageDiscount);
+        }
+        else
+        {
+            // invalid coupon message
+        }
+        return Page();
+    }
+
+    private void SubtractDiscount(int PercentageDiscount)
+    {
+        Console.WriteLine("something happened");
+        foreach (var item in BasketModel.Items )
+        {
+            item.UnitPrice = item.UnitPrice * (1 - (PercentageDiscount / 100));
+        }
     }
 }
