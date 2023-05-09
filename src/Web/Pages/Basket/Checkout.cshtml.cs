@@ -3,10 +3,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.eShopWeb.ApplicationCore.Entities;
 using Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate;
 using Microsoft.eShopWeb.ApplicationCore.Exceptions;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
-using Microsoft.eShopWeb.ApplicationCore.Services;
 using Microsoft.eShopWeb.Infrastructure.Identity;
 using Microsoft.eShopWeb.Web.Interfaces;
 
@@ -20,29 +20,58 @@ public class CheckoutModel : PageModel
     private readonly IOrderService _orderService;
     private string? _username = null;
     private readonly IBasketViewModelService _basketViewModelService;
-    private readonly ICouponService _couponService;
     private readonly IAppLogger<CheckoutModel> _logger;
+    private readonly ICouponService _couponService;
 
     public CheckoutModel(IBasketService basketService,
         IBasketViewModelService basketViewModelService,
         SignInManager<ApplicationUser> signInManager,
         IOrderService orderService,
-        ICouponService couponService,
-        IAppLogger<CheckoutModel> logger)
+        IAppLogger<CheckoutModel> logger,
+        ICouponService couponService)
     {
         _basketService = basketService;
         _signInManager = signInManager;
         _orderService = orderService;
-        _couponService = couponService;
         _basketViewModelService = basketViewModelService;
         _logger = logger;
+        _couponService = couponService;
     }
 
     public BasketViewModel BasketModel { get; set; } = new BasketViewModel();
+    [BindProperty]
+    public Coupon CouponInput { get; set; }
+    [BindProperty]
+    public string ErrorForCoupon { get; set; }
+    [BindProperty]
+    public int PercentageDiscount { get; set; }
+    [BindProperty]
+    public decimal Total { get; set; }
 
     public async Task OnGet()
     {
         await SetBasketModelAsync();
+        if (Request.Cookies.ContainsKey("Coupon"))
+        {
+            PercentageDiscount = Convert.ToInt32(Request.Cookies["Coupon"]);
+        }
+        CalculateTotal();
+    }
+
+    public void CalculateTotal()
+    {
+        if (PercentageDiscount != 0)
+        {
+           
+            decimal basketTotal = BasketModel.Items.Sum(x => x.UnitPrice * x.Quantity);
+            decimal basketTotalWithCoupon = (decimal)(PercentageDiscount / 100.00);
+            Total = Math.Round(basketTotal - (basketTotal * basketTotalWithCoupon), 2);
+        }
+        else
+        {
+            Total = Math.Round(BasketModel.Items.Sum(x => x.UnitPrice * x.Quantity), 2);
+        }
+
     }
 
     public async Task<IActionResult> OnPost(IEnumerable<BasketItemViewModel> items)
@@ -55,11 +84,14 @@ public class CheckoutModel : PageModel
             {
                 return BadRequest();
             }
-
+            
             var updateModel = items.ToDictionary(b => b.Id.ToString(), b => b.Quantity);
             await _basketService.SetQuantities(BasketModel.Id, updateModel);
             await _orderService.CreateOrderAsync(BasketModel.Id, new Address("123 Main St.", "Kent", "OH", "United States", "44240"));
             await _basketService.DeleteBasketAsync(BasketModel.Id);
+            var cookieOptions = new CookieOptions();
+            cookieOptions.Expires = DateTime.Today.AddYears(10);
+            Response.Cookies.Append("Coupon", "0", cookieOptions);
         }
         catch (EmptyBasketOnCheckoutException emptyBasketOnCheckoutException)
         {
@@ -99,27 +131,21 @@ public class CheckoutModel : PageModel
         Response.Cookies.Append(Constants.BASKET_COOKIENAME, _username, cookieOptions);
     }
 
-    private async Task<IActionResult> OnPostValidateCoupon(string couponName)
+    public async Task<IActionResult> OnPostHandleCoupon(string couponCode)
     {
-        var coupon = await _couponService.GetCoupon(couponName);
-        Console.WriteLine("OnPostValidateCoupon");
-        if ( coupon != null )
+        if (!String.IsNullOrWhiteSpace(couponCode) && couponCode.Length > 0)
         {
-            SubtractDiscount(coupon.PercentageDiscount);
+            Coupon checkCoupon = await _couponService.GetCoupon(couponCode);
+            if (checkCoupon != null)
+            {
+                var cookieOptions = new CookieOptions();
+                cookieOptions.Expires = DateTime.Today.AddYears(10);
+                Response.Cookies.Append("Coupon", checkCoupon.PercentageDiscount.ToString(), cookieOptions);
+            } else
+            {
+                ErrorForCoupon = "Coupon doesn't exist"; // this would be our error handling frontend if it wasn't server side rendering.
+            }
         }
-        else
-        {
-            // invalid coupon message
-        }
-        return Page();
-    }
-
-    private void SubtractDiscount(int PercentageDiscount)
-    {
-        Console.WriteLine("something happened");
-        foreach (var item in BasketModel.Items )
-        {
-            item.UnitPrice = item.UnitPrice * (1 - (PercentageDiscount / 100));
-        }
+        return RedirectToPage("/Basket/Checkout");
     }
 }
