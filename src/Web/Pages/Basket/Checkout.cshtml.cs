@@ -8,6 +8,7 @@ using Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate;
 using Microsoft.eShopWeb.ApplicationCore.Exceptions;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.Infrastructure.Identity;
+using Microsoft.eShopWeb.Web.Features.CouponValidation;
 using Microsoft.eShopWeb.Web.Interfaces;
 
 namespace Microsoft.eShopWeb.Web.Pages.Basket;
@@ -135,15 +136,15 @@ public class CheckoutModel : PageModel
     {
         if (!String.IsNullOrWhiteSpace(couponCode) && couponCode.Length > 0)
         {
-            Coupon checkCoupon = await _couponService.GetCoupon(couponCode);
-            if (checkCoupon != null)
+            try
             {
+                Coupon checkCoupon = await CheckValidCouponHandler.GetAndCheckCoupon(_couponService,couponCode);
                 var cookieOptions = new CookieOptions();
                 cookieOptions.Expires = DateTime.Today.AddYears(10);
                 Response.Cookies.Append("Coupon", checkCoupon.PercentageDiscount.ToString(), cookieOptions);
-            } else
+            } catch (CouponNotValidException ex)
             {
-                ErrorForCoupon = "Coupon doesn't exist"; // this would be our error handling frontend if it wasn't server side rendering.
+                ErrorForCoupon = ex.Message; // this would be our error handling frontend if it wasn't server side rendering.
             }
         }
         return RedirectToPage("/Basket/Checkout");
