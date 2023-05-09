@@ -8,7 +8,6 @@ using Microsoft.eShopWeb.ApplicationCore.Entities.OrderAggregate;
 using Microsoft.eShopWeb.ApplicationCore.Exceptions;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.Infrastructure.Identity;
-using Microsoft.eShopWeb.Web.Features.CouponValidation;
 using Microsoft.eShopWeb.Web.Interfaces;
 
 namespace Microsoft.eShopWeb.Web.Pages.Basket;
@@ -138,7 +137,7 @@ public class CheckoutModel : PageModel
         {
             try
             {
-                Coupon checkCoupon = await CheckValidCouponHandler.GetAndCheckCoupon(_couponService,couponCode);
+                Coupon checkCoupon = await _couponService.GetAndCheckCoupon(couponCode);
                 var cookieOptions = new CookieOptions();
                 cookieOptions.Expires = DateTime.Today.AddYears(10);
                 Response.Cookies.Append("Coupon", checkCoupon.PercentageDiscount.ToString(), cookieOptions);
