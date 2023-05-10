@@ -14,7 +14,12 @@ public class DeleteCouponToDb
 
     public DeleteCouponToDb()
     {
-        coupon = new Coupon(1, "test1", 20, DateTime.Now, DateTime.Now.Date.AddDays(2));
+        int id = 1;
+        string couponCode = "test1";
+        int percentageDiscount = 20;
+        DateTime startDate = DateTime.Now;
+        DateTime endDate = DateTime.Now.AddDays(2);
+        coupon = new Coupon(id, couponCode, percentageDiscount, startDate, endDate);
         _mockCouponRepository = new Mock<IRepository<Coupon>>();
         _ = _mockCouponRepository.Setup(x => x.GetByIdAsync(It.IsAny<CouponByIdSpec>(), default)).ReturnsAsync(coupon);
     }
@@ -28,7 +33,7 @@ public class DeleteCouponToDb
 
         Assert.True(gottenResponse);
         _mockCouponRepository.Verify(x => x.GetByIdAsync(It.IsAny<CouponByIdSpec>(), default), Times.Once);
-        
+        _mockCouponRepository.Verify(x => x.DeleteAsync(It.IsAny<Coupon>(), default), Times.Once);
     }
 
     [Fact]

@@ -4,6 +4,7 @@ using System.Diagnostics.Metrics;
 using System.Threading.Tasks;
 using Ardalis.GuardClauses;
 using Microsoft.eShopWeb.ApplicationCore.Entities;
+using Microsoft.eShopWeb.ApplicationCore.Exceptions;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.ApplicationCore.Specifications;
 
@@ -31,14 +32,37 @@ public class CouponService : ICouponService
         Guard.Against.Null(coupon, nameof(coupon));
         return coupon;
     }
-    
-    
+
+    public async Task<Coupon> GetCoupon(int couponId)
+    {
+        var couponSpec = new CouponByIdSpec(couponId);
+        var coupon = await _couponRepository.FirstOrDefaultAsync(couponSpec);
+        Guard.Against.Null(coupon, nameof(coupon));
+        return coupon;
+    }
+
+
+    public async Task<Coupon> GetAndCheckCoupon(string couponCode)
+    {
+        DateTime today = DateTime.Now;
+        Coupon checkedCoupon = await GetCoupon(couponCode);
+
+
+        if (checkedCoupon != null && checkedCoupon.StartDate < today && checkedCoupon.EndDate > today)
+        {
+            return checkedCoupon;
+        }
+
+        throw new CouponNotValidException(couponCode);
+    }
+
+
     public async Task<bool> AddCouponToDb(string couponName, int percentageDiscount, DateTime startDate, DateTime endDate)
     {
         var couponSpec = new CouponSpecification(couponName);
         var newCoupon = await _couponRepository.FirstOrDefaultAsync(couponSpec);
 
-        if (newCoupon != null)
+        if (newCoupon != null || startDate > endDate )
         {
             return false;
         }

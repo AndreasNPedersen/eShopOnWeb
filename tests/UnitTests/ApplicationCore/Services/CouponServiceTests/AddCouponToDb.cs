@@ -17,7 +17,12 @@ public class AddCouponToDb
 
     public AddCouponToDb()
     {
-        coupon = new Coupon(1, "test1", 20, DateTime.Now, DateTime.Now.Date.AddDays(2));
+        int id = 1;
+        string couponCode = "test1";
+        int percentageDiscount = 20;
+        DateTime startDate = DateTime.Now;
+        DateTime endDate = DateTime.Now.AddDays(2);
+        coupon = new Coupon(id,couponCode,percentageDiscount,startDate,endDate);
         _mockCouponRepository = new Mock<IRepository<Coupon>>();
        _= _mockCouponRepository.Setup(x => x.FirstOrDefaultAsync(It.IsAny<CouponSpecification>(), default)).ReturnsAsync(coupon);
     }
@@ -25,13 +30,17 @@ public class AddCouponToDb
     [Fact]
     public async void AddOneCouponSuccess()
     {
-        _mockCouponRepository.Reset();
-        _ = _mockCouponRepository.Setup(x => x.FirstOrDefaultAsync(It.IsAny<CouponSpecification>(), default));
-     
+        _mockCouponRepository.Reset(); //Rests the setups
+
+        _ = _mockCouponRepository.Setup(x => x.FirstOrDefaultAsync(It.IsAny<CouponSpecification>(), default)); //nothing in the db
         var couponService = new CouponService(_mockCouponRepository.Object);
-       var gottenCoupon = await couponService.AddCouponToDb("test2", coupon.PercentageDiscount, coupon.StartDate, coupon.EndDate);
+       var gottenCoupon = await couponService.AddCouponToDb(coupon.Name, coupon.PercentageDiscount, coupon.StartDate, coupon.EndDate);
+
+        _ = _mockCouponRepository.Setup(x => x.AddAsync(coupon, default));
 
         _mockCouponRepository.Verify(x => x.FirstOrDefaultAsync(It.IsAny<CouponSpecification>(), default), Times.Once);
+        _mockCouponRepository.Verify(x => x.AddAsync(It.IsAny<Coupon>(), default), Times.Once);
+
         Assert.True(gottenCoupon);
     }
 
@@ -39,7 +48,8 @@ public class AddCouponToDb
         new List<object[]>
         {
             new object[] {"test1", 1, DateTime.Now, DateTime.Now ,-111111111},
-            new object[] {"test1", 1, DateTime.Now, DateTime.Now,100000000 }
+            new object[] {"test1", 1, DateTime.Now, DateTime.Now,100000000 },
+            new object[] {"test1", 1, DateTime.Now.AddDays(2), DateTime.Now,100000000 }
         };
 
     [Theory, MemberData(nameof(DataFailure), parameters: 5)]
@@ -57,7 +67,7 @@ public class AddCouponToDb
     {
         var couponService = new CouponService(_mockCouponRepository.Object);
         var couponGotten = await couponService.AddCouponToDb(coupon.Name, coupon.PercentageDiscount, coupon.StartDate, coupon.EndDate);
-
+        
         _mockCouponRepository.Verify(x => x.FirstOrDefaultAsync(It.IsAny<CouponSpecification>(), default), Times.Once);
         Assert.False(couponGotten);
     }
