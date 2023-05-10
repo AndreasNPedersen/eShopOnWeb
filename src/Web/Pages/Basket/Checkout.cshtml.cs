@@ -39,9 +39,7 @@ public class CheckoutModel : PageModel
     }
 
     public BasketViewModel BasketModel { get; set; } = new BasketViewModel();
-    [BindProperty]
     public Coupon CouponInput { get; set; }
-    [BindProperty]
     public string ErrorForCoupon { get; set; }
     [BindProperty]
     public int PercentageDiscount { get; set; }
@@ -100,7 +98,7 @@ public class CheckoutModel : PageModel
             return RedirectToPage("/Basket/Index");
         }
 
-        return RedirectToPage("Success");
+        return RedirectToPage("/Basket/Success");
     }
 
     private async Task SetBasketModelAsync()

@@ -33,6 +33,15 @@ public class CouponService : ICouponService
         return coupon;
     }
 
+    public async Task<Coupon> GetCoupon(int couponId)
+    {
+        var couponSpec = new CouponByIdSpec(couponId);
+        var coupon = await _couponRepository.FirstOrDefaultAsync(couponSpec);
+        Guard.Against.Null(coupon, nameof(coupon));
+        return coupon;
+    }
+
+
     public async Task<Coupon> GetAndCheckCoupon(string couponCode)
     {
         DateTime today = DateTime.Now;
@@ -53,7 +62,7 @@ public class CouponService : ICouponService
         var couponSpec = new CouponSpecification(couponName);
         var newCoupon = await _couponRepository.FirstOrDefaultAsync(couponSpec);
 
-        if (newCoupon != null)
+        if (newCoupon != null || startDate > endDate )
         {
             return false;
         }
