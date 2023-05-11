@@ -10,6 +10,10 @@ using Microsoft.eShopWeb.ApplicationCore.Specifications;
 
 namespace Microsoft.eShopWeb.ApplicationCore.Services;
 
+
+/// <summary>
+/// Coupon service for handling repository calls 
+/// </summary>
 public class CouponService : ICouponService
 {
     

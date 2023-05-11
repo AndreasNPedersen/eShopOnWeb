@@ -6,6 +6,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace Microsoft.eShopWeb.ApplicationCore.Exceptions;
+
+/// <summary>
+/// An Exception which is thrown when a coupon is not valid
+/// </summary>
 public class CouponNotValidException : Exception
 {
     public CouponNotValidException(string couponCode):base($"Coupon code:{couponCode} not valid")
