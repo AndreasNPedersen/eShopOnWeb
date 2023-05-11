@@ -93,6 +93,7 @@ builder.Services.AddScoped<ToastService>();
 builder.Services.AddScoped<HttpService>();
 builder.Services.AddScoped<ICouponService, CouponService>();
 builder.Services.AddBlazorServices();
+builder.Services.AddScoped<ICouponService, CouponService>();
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 

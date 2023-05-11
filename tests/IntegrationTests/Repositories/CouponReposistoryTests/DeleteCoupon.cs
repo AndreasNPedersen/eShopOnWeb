@@ -39,10 +39,10 @@ public class DeleteCoupon
     }
 
     [Fact]
-    public async Task GetAndDeleteExistingCoupon()
+    public async Task DeleteCouponSuccess()
     {
-        
-        int couponId = _existingCoupon.Id;
+        //arrange
+        int couponId = existingCoupon.Id;
 
         //is the coupon in the system test
         var couponFromRepo = await _couponRepository.GetByIdAsync(couponId);

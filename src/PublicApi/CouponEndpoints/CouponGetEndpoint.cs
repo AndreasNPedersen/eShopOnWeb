@@ -20,7 +20,7 @@ public class CouponGetEndpoint : IEndpoint<IResult, GetByIdCouponRequest, IRepos
 
     public void AddRoute(IEndpointRouteBuilder app)
     {
-        app.MapGet("api/Coupon",
+        app.MapGet("api/coupon",
                 async (int couponId, IRepository<Coupon> couponRepository) =>
                 {
                     return await HandleAsync(new GetByIdCouponRequest(couponId), couponRepository);
@@ -55,10 +55,5 @@ public class CouponGetEndpoint : IEndpoint<IResult, GetByIdCouponRequest, IRepos
 
 
         return Results.Ok(coupon);
-    }
-
-    public Task<IResult> HandleAsync(IRepository<Coupon> request)
-    {
-        throw new System.NotImplementedException();
     }
 }
