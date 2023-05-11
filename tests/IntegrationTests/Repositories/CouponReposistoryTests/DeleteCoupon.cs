@@ -11,6 +11,10 @@ using Microsoft.eShopWeb.ApplicationCore.Entities;
 using Ardalis.GuardClauses;
 
 namespace Microsoft.eShopWeb.IntegrationTests.Repositories.CouponReposistoryTests;
+
+/// <summary>
+/// Test Database for deleting a coupon
+/// </summary>
 public class DeleteCoupon
 {
     private readonly CatalogContext _catalogContext;

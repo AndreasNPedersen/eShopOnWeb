@@ -12,6 +12,10 @@ using Xunit;
 using Microsoft.eShopWeb.ApplicationCore.Entities;
 
 namespace Microsoft.eShopWeb.IntegrationTests.Repositories.CouponReposistoryTests;
+
+/// <summary>
+/// Test Database for getting a coupon Id
+/// </summary>
 public class GetById
 {
     private readonly CatalogContext _catalogContext;

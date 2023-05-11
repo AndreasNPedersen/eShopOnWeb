@@ -11,6 +11,9 @@ using Microsoft.eShopWeb.ApplicationCore.Entities;
 
 
 namespace Microsoft.eShopWeb.IntegrationTests.Repositories.CouponReposistoryTests;
+/// <summary>
+/// Test Database for adding a coupon, and checking the list of data matches
+/// </summary>
 public class AddCoupon
 {
     private readonly CatalogContext _catalogContext;
@@ -37,6 +40,8 @@ public class AddCoupon
         DateTime startDate = DateTime.Now;
         DateTime endDate = DateTime.Now.AddDays(2);
         _coupon = new Coupon(id, couponCode, percentageDiscount, startDate, endDate);
+        int databaseListOfCouponsLenght = 1;
+
 
         await _couponRepository.AddAsync(_coupon);
         await _couponRepository.SaveChangesAsync();
@@ -44,6 +49,8 @@ public class AddCoupon
 
         var checkAddedCoupon = await _couponRepository.ListAsync();
         Assert.Equivalent(_coupon, checkAddedCoupon[0]);
+
+        Assert.Equal(databaseListOfCouponsLenght, checkAddedCoupon.Count);
         
 
     }
