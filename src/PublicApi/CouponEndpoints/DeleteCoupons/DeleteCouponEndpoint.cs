@@ -15,7 +15,7 @@ public class DeleteCouponEndpoint : IEndpoint<IResult, DeleteCouponRequest, IRep
 {
     public void AddRoute(IEndpointRouteBuilder app)
     {
-        app.MapDelete("api/DeleteCoupon/{couponId}",
+        app.MapDelete("api/coupon/{couponId}",
             [Authorize(Roles = BlazorShared.Authorization.Constants.Roles.ADMINISTRATORS, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async
             (int couponId, IRepository<Coupon> itemRepository) =>
             {
