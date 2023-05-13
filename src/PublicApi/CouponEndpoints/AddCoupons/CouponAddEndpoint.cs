@@ -51,9 +51,10 @@ public class CouponAddEndpoint
         newItem.StartDate = request.StartDate;
         newItem.EndDate = request.EndDate;
 
-        newItem = await itemRepository.AddAsync(newItem);
+        await itemRepository.AddAsync(newItem);
+        response.CreatedCoupon = true;
 
-        return Results.Created($"api/CouponAdded/", response);
+        return Results.Created($"api/addCoupon/", response);
     }
 
 }

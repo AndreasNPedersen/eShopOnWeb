@@ -2,7 +2,7 @@
 using Microsoft.eShopWeb.PublicApi.CatalogTypeEndpoints;
 using System.Collections.Generic;
 
-namespace Microsoft.eShopWeb.PublicApi.CouponEndpoints;
+namespace Microsoft.eShopWeb.PublicApi.CouponEndpoints.GetCoupons;
 
 public class CouponGetResponse : BaseResponse
 {

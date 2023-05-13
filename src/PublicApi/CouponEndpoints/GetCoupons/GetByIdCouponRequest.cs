@@ -1,4 +1,4 @@
-﻿namespace Microsoft.eShopWeb.PublicApi.CouponEndpoints;
+﻿namespace Microsoft.eShopWeb.PublicApi.CouponEndpoints.GetCoupons;
 
 public class GetByIdCouponRequest : BaseRequest
 {

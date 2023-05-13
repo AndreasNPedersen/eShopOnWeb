@@ -6,8 +6,11 @@ using Microsoft.eShopWeb.ApplicationCore.Entities;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using AutoMapper;
 using MinimalApi.Endpoint;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using static BlazorShared.Authorization.Constants;
 
-namespace Microsoft.eShopWeb.PublicApi.CouponEndpoints;
+namespace Microsoft.eShopWeb.PublicApi.CouponEndpoints.GetCoupons;
 
 public class CouponGetEndpoint : IEndpoint<IResult, GetByIdCouponRequest, IRepository<Coupon>>
 {
@@ -21,7 +24,8 @@ public class CouponGetEndpoint : IEndpoint<IResult, GetByIdCouponRequest, IRepos
     public void AddRoute(IEndpointRouteBuilder app)
     {
         app.MapGet("api/Coupon",
-                async (int couponId, IRepository<Coupon> couponRepository) =>
+            [Authorize(Roles = BlazorShared.Authorization.Constants.Roles.ADMINISTRATORS, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+            async (int couponId, IRepository<Coupon> couponRepository) =>
                 {
                     return await HandleAsync(new GetByIdCouponRequest(couponId), couponRepository);
                 })
@@ -35,7 +39,7 @@ public class CouponGetEndpoint : IEndpoint<IResult, GetByIdCouponRequest, IRepos
         var response = new GetByIdCouponResponse(request.CorrelationId());
 
         var coupon = await couponRepository.GetByIdAsync(request.CouponId);
-        
+
         if (coupon is null)
         {
             return Results.NotFound();
@@ -50,15 +54,11 @@ public class CouponGetEndpoint : IEndpoint<IResult, GetByIdCouponRequest, IRepos
             EndDate = coupon.EndDate
 
         };
-        
-        
+
+
 
 
         return Results.Ok(coupon);
     }
 
-    public Task<IResult> HandleAsync(IRepository<Coupon> request)
-    {
-        throw new System.NotImplementedException();
-    }
 }

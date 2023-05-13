@@ -44,7 +44,7 @@ public class DeleteCoupon
         
         int couponId = _existingCoupon.Id;
 
-        //is the coupon in the system test
+        //is the coupon in the system check
         var couponFromRepo = await _couponRepository.GetByIdAsync(couponId);
         Assert.Equal(_existingCoupon.Id, couponFromRepo.Id);
         
@@ -54,4 +54,6 @@ public class DeleteCoupon
         Assert.Null(tryGetDeletedCoupon);
 
     }
+
+
 }
