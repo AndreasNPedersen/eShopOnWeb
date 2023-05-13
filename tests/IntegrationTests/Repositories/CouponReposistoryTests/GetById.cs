@@ -12,6 +12,10 @@ using Xunit;
 using Microsoft.eShopWeb.ApplicationCore.Entities;
 
 namespace Microsoft.eShopWeb.IntegrationTests.Repositories.CouponReposistoryTests;
+
+/// <summary>
+/// Test Database for getting a coupon Id
+/// </summary>
 public class GetById
 {
     private readonly CatalogContext _catalogContext;
@@ -21,7 +25,7 @@ public class GetById
     {
         _output = output;
         var dbOptions = new DbContextOptionsBuilder<CatalogContext>()
-            .UseInMemoryDatabase(databaseName: "TestCatalog")
+            .UseInMemoryDatabase(databaseName: "TestGetCoupon")
             .Options;
         _catalogContext = new CatalogContext(dbOptions);
         _couponRepository = new EfRepository<Coupon>(_catalogContext);

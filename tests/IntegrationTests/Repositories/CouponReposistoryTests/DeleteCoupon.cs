@@ -11,17 +11,21 @@ using Microsoft.eShopWeb.ApplicationCore.Entities;
 using Ardalis.GuardClauses;
 
 namespace Microsoft.eShopWeb.IntegrationTests.Repositories.CouponReposistoryTests;
+
+/// <summary>
+/// Test Database for deleting a coupon
+/// </summary>
 public class DeleteCoupon
 {
     private readonly CatalogContext _catalogContext;
     private readonly EfRepository<Coupon> _couponRepository;
     private readonly ITestOutputHelper _output;
-    private readonly Coupon existingCoupon = new Coupon(0, "test", 12, DateTime.Now, DateTime.Now.AddDays(2));
+    private readonly Coupon _existingCoupon = new Coupon(0, "test", 12, DateTime.Now, DateTime.Now.AddDays(2));
     public DeleteCoupon(ITestOutputHelper output)
     {
         _output = output;
         var dbOptions = new DbContextOptionsBuilder<CatalogContext>()
-            .UseInMemoryDatabase(databaseName: "TestCatalog")
+            .UseInMemoryDatabase(databaseName: "TestCouponDeletion")
             .Options;
         _catalogContext = new CatalogContext(dbOptions);
         _couponRepository = new EfRepository<Coupon>(_catalogContext);
@@ -30,7 +34,7 @@ public class DeleteCoupon
 
     public void Setup()
     {
-        _catalogContext.Coupons.Add(existingCoupon);
+        _catalogContext.Coupons.Add(_existingCoupon);
         _catalogContext.SaveChanges();
     }
 
@@ -40,9 +44,9 @@ public class DeleteCoupon
         //arrange
         int couponId = existingCoupon.Id;
 
-        //is the coupon in the system test
+        //is the coupon in the system check
         var couponFromRepo = await _couponRepository.GetByIdAsync(couponId);
-        Assert.Equal(existingCoupon.Id, couponFromRepo.Id);
+        Assert.Equal(_existingCoupon.Id, couponFromRepo.Id);
         
         //test the deletion
         _=_couponRepository.DeleteAsync(couponFromRepo);
@@ -50,4 +54,6 @@ public class DeleteCoupon
         Assert.Null(tryGetDeletedCoupon);
 
     }
+
+
 }

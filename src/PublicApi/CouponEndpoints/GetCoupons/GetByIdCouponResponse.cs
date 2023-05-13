@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Microsoft.eShopWeb.PublicApi.CouponEndpoints;
+namespace Microsoft.eShopWeb.PublicApi.CouponEndpoints.GetCoupons;
 
 public class GetByIdCouponResponse : BaseResponse
 {

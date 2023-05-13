@@ -31,7 +31,10 @@ public class DeleteCouponEndpoint : IEndpoint<IResult, DeleteCouponRequest, IRep
 
         var itemToDelete = await itemRepository.GetByIdAsync(request.CouponId);
         if (itemToDelete is null)
-            return Results.NotFound();
+        {
+            response.DeletedStatus = false;
+            return Results.NotFound(response);
+        }
 
         await itemRepository.DeleteAsync(itemToDelete);
 
