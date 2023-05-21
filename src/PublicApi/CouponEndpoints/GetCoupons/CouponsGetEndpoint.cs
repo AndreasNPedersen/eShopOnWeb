@@ -22,9 +22,9 @@ public class CouponsGetEndpoint : IEndpoint<IResult, GetCouponListRequest, IRepo
 
     public void AddRoute(IEndpointRouteBuilder app)
     {
-        app.MapGet("api/Coupon",
+        app.MapGet("api/coupon",
             [Authorize(Roles = BlazorShared.Authorization.Constants.Roles.ADMINISTRATORS, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-        async (int couponId, IRepository<Coupon> couponRepository) =>
+        async (IRepository<Coupon> couponRepository) =>
             {
                 return await HandleAsync(new GetCouponListRequest(), couponRepository);
             })
