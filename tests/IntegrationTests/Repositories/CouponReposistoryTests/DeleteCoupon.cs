@@ -42,7 +42,7 @@ public class DeleteCoupon
     public async Task DeleteCouponSuccess()
     {
         //arrange
-        int couponId = existingCoupon.Id;
+        int couponId = _existingCoupon.Id;
 
         //is the coupon in the system check
         var couponFromRepo = await _couponRepository.GetByIdAsync(couponId);
