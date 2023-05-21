@@ -9,11 +9,13 @@ using Microsoft.eShopWeb.ApplicationCore.Exceptions;
 using Microsoft.eShopWeb.ApplicationCore.Interfaces;
 using Microsoft.eShopWeb.ApplicationCore.Specifications;
 using Microsoft.eShopWeb.PublicApi.CatalogItemEndpoints;
+using Microsoft.eShopWeb.PublicApi.CouponEndpoints.GetCoupons;
+using MinimalApi.Endpoint;
 using System.Threading.Tasks;
 
 namespace Microsoft.eShopWeb.PublicApi.CouponEndpoints.AddCoupons;
 
-public class CouponAddEndpoint
+public class CouponAddEndpoint : IEndpoint<AspNetCore.Http.IResult, AddCouponRequest, IRepository<Coupon>>
 {
     private readonly IUriComposer _uriComposer;
 
