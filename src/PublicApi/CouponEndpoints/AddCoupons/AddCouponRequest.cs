@@ -8,4 +8,6 @@ public class AddCouponRequest : BaseRequest
     public int PercentageDiscount { get; set; }
     public DateTime StartDate { get; set; }
     public DateTime EndDate { get; set; }
+
+    public AddCouponRequest() { }
 }
