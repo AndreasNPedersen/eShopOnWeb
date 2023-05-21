@@ -27,7 +27,8 @@ public class CouponAddEndpoint : IEndpoint<AspNetCore.Http.IResult, AddCouponReq
     public void AddRoute(IEndpointRouteBuilder app)
     {
         app.MapPost("api/coupon",
-            [Authorize(Roles = BlazorShared.Authorization.Constants.Roles.ADMINISTRATORS, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)] async
+       [Authorize(Roles = BlazorShared.Authorization.Constants.Roles.ADMINISTRATORS, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+            async
             (AddCouponRequest request, IRepository<Coupon> itemRepository) =>
             {
                 return await HandleAsync(request, itemRepository);
@@ -42,7 +43,7 @@ public class CouponAddEndpoint : IEndpoint<AspNetCore.Http.IResult, AddCouponReq
 
         var couponNameSpecification = new CouponSpecification(request.Name);
         var existingCataloogItem = await itemRepository.FirstOrDefaultAsync(couponNameSpecification);
-        if (existingCataloogItem == null)
+        if (existingCataloogItem != null)
         {
             throw new DuplicateException($"A coupon with name {request.Name} already exists");
         }
