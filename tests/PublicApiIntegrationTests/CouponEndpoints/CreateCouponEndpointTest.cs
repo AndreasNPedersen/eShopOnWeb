@@ -27,7 +27,7 @@ public class CreateCouponEndpointTest
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         var response = await client.PostAsync("api/coupon", jsonContent);
 
-        Assert.AreEqual(HttpStatusCode.Forbidden, response.StatusCode);
+        Assert.AreEqual(HttpStatusCode.Unauthorized, response.StatusCode);
     }
 
     [TestMethod]
@@ -44,13 +44,7 @@ public class CreateCouponEndpointTest
 
         Assert.IsTrue(model.CreatedCoupon);
     }
-    //I har fucket up
 
-    [TestMethod]
-    public void ReturnsTrue()
-    {
-        Assert.IsTrue(true);
-    }
     private StringContent GetValidNewItemJson()
     {
         var request = getCoupon();
