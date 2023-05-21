@@ -32,6 +32,7 @@ public class GetCouponEndpointTest : IAsyncLifetime
         var stringResponse = await response.Content.ReadAsStringAsync();
         var model = stringResponse.FromJson<GetByIdCouponResponse>();
 
+        Assert.IsNotNull(model);
         Assert.AreEqual(1, model.Coupon.Id);
         Assert.AreEqual("MAY_10_PERCENT", model.Coupon.Name);
 
