@@ -29,12 +29,14 @@ public class CouponEntity
         };
     
     [Theory, MemberData(nameof(DataFailure), parameters: 2)]
-    public void AddCouponEntryFails(string name,DateTime startDate)
+    public void AddCouponEntryFails(string name,DateTime todayDate)
     {   
         // Testing DateTime values, since the Compiler is clever enough to know when an int is too large, cannot test int.
         //Assert
-        Assert.Throws<ArgumentOutOfRangeException>(()=> new Coupon(int.MaxValue,name, int.MaxValue, startDate, DateTime.Now.Date.AddDays(int.MaxValue)));
-        Assert.Throws<ArgumentOutOfRangeException>(() => new Coupon(int.MaxValue, name, int.MaxValue, startDate, DateTime.Now.Date.AddDays(int.MinValue)));
+        Assert.Throws<ArgumentOutOfRangeException>(()=> new Coupon(int.MaxValue,name, int.MaxValue, todayDate, DateTime.Now.Date.AddDays(int.MaxValue)));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new Coupon(int.MaxValue, name, int.MaxValue, todayDate, DateTime.Now.Date.AddDays(int.MinValue)));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new Coupon(int.MaxValue, name, int.MaxValue, DateTime.Now.Date.AddDays(int.MaxValue), todayDate));
+        Assert.Throws<ArgumentOutOfRangeException>(() => new Coupon(int.MaxValue, name, int.MaxValue, DateTime.Now.Date.AddDays(int.MinValue), todayDate));
     }
     
 }
