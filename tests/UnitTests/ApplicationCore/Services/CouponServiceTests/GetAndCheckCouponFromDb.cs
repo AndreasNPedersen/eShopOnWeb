@@ -28,8 +28,8 @@ public class GetAndCheckCouponFromDb
     public async void GetOneCouponSuccess_WhenCouponIsValidDate()
     {
         var couponService = new CouponService(_mockCouponRepository.Object);
-        Coupon checkedCoupon = await couponService.GetAndCheckCoupon(couponOne.Name);
 
+        Coupon checkedCoupon = await couponService.GetAndCheckCoupon(couponOne.Name);
         _mockCouponRepository.Verify(x => x.FirstOrDefaultAsync(It.IsAny<CouponSpecification>(), default), Times.Once);
 
         Assert.Equivalent(checkedCoupon, couponOne);
