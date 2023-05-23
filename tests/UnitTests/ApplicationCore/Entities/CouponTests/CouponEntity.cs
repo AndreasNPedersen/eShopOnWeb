@@ -23,18 +23,26 @@ public class CouponEntity
     public static IEnumerable<object[]> DataFailure =>
         new List<object[]>
         {
-            new object[] { "", DateTime.Now},
-            new object[] {"", DateTime.Now },
-
+            new object[] { int.MaxValue, int.MaxValue, "", DateTime.Now},
+            new object[] {int.MinValue,int.MinValue,"", DateTime.Now },
+            new object[] {int.MaxValue,int.MinValue,"", DateTime.Now },
+            new object[] {int.MinValue,int.MaxValue,String.Empty, DateTime.Now, },
         };
     
-    [Theory, MemberData(nameof(DataFailure), parameters: 2)]
-    public void AddCouponEntryFails(string name,DateTime startDate)
+    [Theory, MemberData(nameof(DataFailure), parameters: 4)]
+    public void AddCouponEntryFails(int id, int percentageDiscount, string couponCode,DateTime todayDate)
     {   
-        // Testing DateTime values, since the Compiler is clever enough to know when an int is too large, cannot test int.
+        // Testing DateTime values, since the Compiler is clever enough to know when an int is too large,
+        // cannot test DateTime add or subtract in memberdata.
         //Assert
-        Assert.Throws<ArgumentOutOfRangeException>(()=> new Coupon(int.MaxValue,name, int.MaxValue, startDate, DateTime.Now.Date.AddDays(int.MaxValue)));
-        Assert.Throws<ArgumentOutOfRangeException>(() => new Coupon(int.MaxValue, name, int.MaxValue, startDate, DateTime.Now.Date.AddDays(int.MinValue)));
+        Assert.Throws<ArgumentOutOfRangeException>(()=> 
+            new Coupon(id, couponCode, percentageDiscount, todayDate, DateTime.Now.Date.AddDays(int.MaxValue)));
+        Assert.Throws<ArgumentOutOfRangeException>(() => 
+            new Coupon(id, couponCode, percentageDiscount, todayDate, DateTime.Now.Date.AddDays(int.MinValue)));
+        Assert.Throws<ArgumentOutOfRangeException>(() => 
+            new Coupon(id, couponCode, percentageDiscount, DateTime.Now.Date.AddDays(int.MaxValue), todayDate));
+        Assert.Throws<ArgumentOutOfRangeException>(() => 
+            new Coupon(id, couponCode, percentageDiscount, DateTime.Now.Date.AddDays(int.MinValue), todayDate));
     }
     
 }

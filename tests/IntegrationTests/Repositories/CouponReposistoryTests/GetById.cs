@@ -20,10 +20,8 @@ public class GetById
 {
     private readonly CatalogContext _catalogContext;
     private readonly EfRepository<Coupon> _couponRepository;
-    private readonly ITestOutputHelper _output;
-    public GetById(ITestOutputHelper output)
+    public GetById()
     {
-        _output = output;
         var dbOptions = new DbContextOptionsBuilder<CatalogContext>()
             .UseInMemoryDatabase(databaseName: "TestGetCoupon")
             .Options;
@@ -35,13 +33,15 @@ public class GetById
     public async Task GetsExistingCoupon()
     {
         var existingCoupon = new Coupon(0,"test",12,DateTime.Now,DateTime.Now.AddDays(2));
+
+
         _catalogContext.Coupons.Add(existingCoupon);
         _catalogContext.SaveChanges();
         int couponId = existingCoupon.Id;
-        _output.WriteLine($"OrderId: {couponId}");
+        var couponFromRepo = await _couponRepository.GetByIdAsync(couponId);
 
-        var orderFromRepo = await _couponRepository.GetByIdAsync(couponId);
-        Assert.Equal(existingCoupon.Id, orderFromRepo.Id);
+
+        Assert.Equivalent(existingCoupon, couponFromRepo);
 
     }
 }

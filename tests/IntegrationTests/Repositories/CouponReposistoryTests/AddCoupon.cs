@@ -18,11 +18,9 @@ public class AddCoupon
 {
     private readonly CatalogContext _catalogContext;
     private readonly EfRepository<Coupon> _couponRepository;
-    private readonly ITestOutputHelper _output;
     private Coupon _coupon = new ();
-    public AddCoupon(ITestOutputHelper output)
+    public AddCoupon()
     {
-        _output = output;
         var dbOptions = new DbContextOptionsBuilder<CatalogContext>()
             .UseInMemoryDatabase(databaseName: "TestAddCoupon")
             .Options;
@@ -45,11 +43,9 @@ public class AddCoupon
 
         await _couponRepository.AddAsync(_coupon);
         await _couponRepository.SaveChangesAsync();
-
-
         var checkAddedCoupon = await _couponRepository.ListAsync();
-        Assert.Equivalent(_coupon, checkAddedCoupon[0]);
 
+        Assert.Equivalent(_coupon, checkAddedCoupon[0]);
         Assert.Equal(databaseListOfCouponsLenght, checkAddedCoupon.Count);
         
 
