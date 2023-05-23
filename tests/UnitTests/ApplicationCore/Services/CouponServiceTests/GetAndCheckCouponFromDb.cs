@@ -15,8 +15,8 @@ namespace Microsoft.eShopWeb.UnitTests.ApplicationCore.Services.CouponServiceTes
 public class GetAndCheckCouponFromDb
 {
     private readonly Mock<IRepository<Coupon>> _mockCouponRepository = new();
-        private Coupon couponOne = new Coupon(1, "test1", 20, DateTime.Now.Subtract(TimeSpan.FromDays(1)), DateTime.Now.Date.AddDays(2));
-        private Coupon couponTwo = new Coupon(2, "test2", 20, DateTime.Now.Subtract(TimeSpan.FromDays(10)), DateTime.Now.Subtract(TimeSpan.FromDays(5)));
+    private Coupon couponOne = new Coupon(1, "test1", 20, DateTime.Now.Subtract(TimeSpan.FromDays(1)), DateTime.Now.Date.AddDays(2));
+    private Coupon couponTwo = new Coupon(2, "test2", 20, DateTime.Now.Subtract(TimeSpan.FromDays(10)), DateTime.Now.Subtract(TimeSpan.FromDays(5)));
 
     public GetAndCheckCouponFromDb() {
         _mockCouponRepository = new Mock<IRepository<Coupon>>();
@@ -30,8 +30,8 @@ public class GetAndCheckCouponFromDb
         var couponService = new CouponService(_mockCouponRepository.Object);
 
         Coupon checkedCoupon = await couponService.GetAndCheckCoupon(couponOne.Name);
+        
         _mockCouponRepository.Verify(x => x.FirstOrDefaultAsync(It.IsAny<CouponSpecification>(), default), Times.Once);
-
         Assert.Equivalent(checkedCoupon, couponOne);
     }
 

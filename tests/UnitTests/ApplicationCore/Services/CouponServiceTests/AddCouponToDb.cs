@@ -30,17 +30,14 @@ public class AddCouponToDb
     [Fact]
     public async void AddOneCouponSuccess()
     {
-        _mockCouponRepository.Reset(); //Rests the setups
+        _ = _mockCouponRepository.Setup(x => x.FirstOrDefaultAsync(It.IsAny<CouponSpecification>(), default)); //nothing in the db mocked
 
-        _ = _mockCouponRepository.Setup(x => x.FirstOrDefaultAsync(It.IsAny<CouponSpecification>(), default)); //nothing in the db
         var couponService = new CouponService(_mockCouponRepository.Object);
        var gottenCoupon = await couponService.AddCouponToDb(coupon.Name, coupon.PercentageDiscount, coupon.StartDate, coupon.EndDate);
-
         _ = _mockCouponRepository.Setup(x => x.AddAsync(coupon, default));
 
         _mockCouponRepository.Verify(x => x.FirstOrDefaultAsync(It.IsAny<CouponSpecification>(), default), Times.Once);
         _mockCouponRepository.Verify(x => x.AddAsync(It.IsAny<Coupon>(), default), Times.Once);
-
         Assert.True(gottenCoupon);
     }
 
@@ -63,7 +60,7 @@ public class AddCouponToDb
     }
 
     [Fact]
-    public async void AddOneAldreadyInDb_ExpectedFailure()
+    public async void AddOneAlreadyInDb_ExpectedFailure()
     {
         var couponService = new CouponService(_mockCouponRepository.Object);
         var couponGotten = await couponService.AddCouponToDb(coupon.Name, coupon.PercentageDiscount, coupon.StartDate, coupon.EndDate);

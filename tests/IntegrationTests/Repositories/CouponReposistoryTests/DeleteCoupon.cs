@@ -19,11 +19,9 @@ public class DeleteCoupon
 {
     private readonly CatalogContext _catalogContext;
     private readonly EfRepository<Coupon> _couponRepository;
-    private readonly ITestOutputHelper _output;
     private readonly Coupon _existingCoupon = new Coupon(0, "test", 12, DateTime.Now, DateTime.Now.AddDays(2));
-    public DeleteCoupon(ITestOutputHelper output)
+    public DeleteCoupon()
     {
-        _output = output;
         var dbOptions = new DbContextOptionsBuilder<CatalogContext>()
             .UseInMemoryDatabase(databaseName: "TestCouponDeletion")
             .Options;
@@ -42,7 +40,7 @@ public class DeleteCoupon
     public async Task DeleteCouponSuccess()
     {
         //arrange
-        int couponId = existingCoupon.Id;
+        int couponId = _existingCoupon.Id;
 
         //is the coupon in the system check
         var couponFromRepo = await _couponRepository.GetByIdAsync(couponId);
@@ -50,7 +48,10 @@ public class DeleteCoupon
         
         //test the deletion
         _=_couponRepository.DeleteAsync(couponFromRepo);
+
+        //Try get the deleted coupon
         var tryGetDeletedCoupon = await _couponRepository.GetByIdAsync(couponId);
+        
         Assert.Null(tryGetDeletedCoupon);
 
     }
