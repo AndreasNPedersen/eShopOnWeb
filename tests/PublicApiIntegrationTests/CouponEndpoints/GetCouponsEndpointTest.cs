@@ -44,10 +44,6 @@ public class GetCouponsEndpointTest
             new AddCouponRequest("JULY_10_PERCENT", 5, DateTime.Now, DateTime.Now.AddDays(1)),
         };
         
-        //var token = ApiTokenHelper.GetAdminUserToken();
-        //var client = ProgramTest.NewClient;
-        //client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-
         for (int i = 0; i < couponsToAdd.Count; i++)
         {
             var token = ApiTokenHelper.GetAdminUserToken();
