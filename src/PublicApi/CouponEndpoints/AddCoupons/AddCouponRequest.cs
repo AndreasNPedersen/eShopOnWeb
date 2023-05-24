@@ -10,4 +10,11 @@ public class AddCouponRequest : BaseRequest
     public DateTime EndDate { get; set; }
 
     public AddCouponRequest() { }
+
+    public AddCouponRequest(String name, int percentageDiscount, DateTime startDate, DateTime endDate) {
+        Name = name;
+        PercentageDiscount = percentageDiscount;
+        StartDate = startDate;
+        EndDate = endDate;
+    }
 }
