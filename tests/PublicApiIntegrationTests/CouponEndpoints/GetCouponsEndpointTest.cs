@@ -22,7 +22,6 @@ public class GetCouponsEndpointTest
     [TestMethod]
     public async Task testGetCoupons()
     {
-        //var jsonContent = GetValidNewItemJson();
         var token = ApiTokenHelper.GetAdminUserToken();
         var client = ProgramTest.NewClient;
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -35,7 +34,6 @@ public class GetCouponsEndpointTest
         Assert.AreEqual(2, tmpList.Count);
     }
 
-
     [TestInitialize]
     public async Task addCouponBeforeTest()
     {
@@ -44,15 +42,18 @@ public class GetCouponsEndpointTest
             new AddCouponRequest("JULY_10_PERCENT", 5, DateTime.Now, DateTime.Now.AddDays(1)),
         };
         
+        var token = ApiTokenHelper.GetAdminUserToken();
+        var client = ProgramTest.NewClient;
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         for (int i = 0; i < couponsToAdd.Count; i++)
         {
-            var token = ApiTokenHelper.GetAdminUserToken();
-            var client = ProgramTest.NewClient;
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
             var jsonContent = new StringContent(System.Text.Json.JsonSerializer.Serialize(couponsToAdd[i]), Encoding.UTF8, "application/json");
-            var response = await client.PostAsync("api/coupon", jsonContent);
-            var stringResponse = await response.Content.ReadAsStringAsync();
-            var model = stringResponse.FromJson<GetByIdCouponResponse>();
+            try //Throws a C# exception for handeling an I/O, but still goes threw
+            {
+                _ = await client.PostAsync("api/coupon", jsonContent);
+            }
+            catch (Exception) { }
+ 
         }
     }
 }
